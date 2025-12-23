@@ -3,7 +3,6 @@ package com.unknownclinic.appointment.controller;
 import com.unknownclinic.appointment.dto.PatientRegistrationDto;
 import com.unknownclinic.appointment.service.PatientService;
 import jakarta.validation.Valid;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,11 +13,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AuthController {
     
     private final PatientService patientService;
-    private final PasswordEncoder passwordEncoder;
 
-    public AuthController(PatientService patientService, PasswordEncoder passwordEncoder) {
+    public AuthController(PatientService patientService) {
         this.patientService = patientService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     /**

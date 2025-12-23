@@ -2,10 +2,8 @@ package com.unknownclinic.appointment.controller;
 
 import com.unknownclinic.appointment.domain.Booking;
 import com.unknownclinic.appointment.domain.BusinessDay;
-import com.unknownclinic.appointment.security.AdminUserDetails;
 import com.unknownclinic.appointment.service.BookingService;
 import com.unknownclinic.appointment.service.BusinessDayService;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;

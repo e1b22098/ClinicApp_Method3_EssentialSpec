@@ -3,11 +3,9 @@ package com.unknownclinic.appointment.controller;
 import com.unknownclinic.appointment.domain.Booking;
 import com.unknownclinic.appointment.domain.BusinessDay;
 import com.unknownclinic.appointment.dto.BookingDto;
-import com.unknownclinic.appointment.dto.PatientRegistrationDto;
 import com.unknownclinic.appointment.security.PatientUserDetails;
 import com.unknownclinic.appointment.service.BookingService;
 import com.unknownclinic.appointment.service.BusinessDayService;
-import com.unknownclinic.appointment.service.PatientService;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -22,13 +20,11 @@ import java.util.List;
 @RequestMapping("/patient")
 public class PatientController {
     
-    private final PatientService patientService;
     private final BookingService bookingService;
     private final BusinessDayService businessDayService;
 
-    public PatientController(PatientService patientService, BookingService bookingService,
+    public PatientController(BookingService bookingService,
                             BusinessDayService businessDayService) {
-        this.patientService = patientService;
         this.bookingService = bookingService;
         this.businessDayService = businessDayService;
     }
