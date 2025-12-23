@@ -31,9 +31,16 @@ public class AdminController {
      */
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
-        List<BusinessDay> businessDays = businessDayService.getAllBusinessDays();
-        model.addAttribute("businessDays", businessDays);
-        return "admin/dashboard";
+        try {
+            List<BusinessDay> businessDays = businessDayService.getAllBusinessDays();
+            model.addAttribute("businessDays", businessDays);
+            return "admin/dashboard";
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("error", "営業日データの取得に失敗しました: " + e.getMessage());
+            model.addAttribute("businessDays", java.util.Collections.emptyList());
+            return "admin/dashboard";
+        }
     }
 
     /**
@@ -53,9 +60,16 @@ public class AdminController {
      */
     @GetMapping("/business-days")
     public String businessDays(Model model) {
-        List<BusinessDay> businessDays = businessDayService.getAllBusinessDays();
-        model.addAttribute("businessDays", businessDays);
-        return "admin/business-days";
+        try {
+            List<BusinessDay> businessDays = businessDayService.getAllBusinessDays();
+            model.addAttribute("businessDays", businessDays);
+            return "admin/business-days";
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("error", "営業日データの取得に失敗しました: " + e.getMessage());
+            model.addAttribute("businessDays", java.util.Collections.emptyList());
+            return "admin/business-days";
+        }
     }
 
     /**
