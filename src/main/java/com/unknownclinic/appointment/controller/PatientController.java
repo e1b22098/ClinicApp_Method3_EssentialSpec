@@ -102,10 +102,11 @@ public class PatientController {
             return "redirect:/patient/dashboard";
         }
 
+        final Long finalBookingId = bookingId;
         try {
             List<Booking> bookings = bookingService.getBookingsByPatientId(userDetails.getPatient().getPatientId());
             Booking booking = bookings.stream()
-                .filter(b -> b.getBookingId().equals(bookingId))
+                .filter(b -> b.getBookingId().equals(finalBookingId))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("予約が見つかりません"));
             

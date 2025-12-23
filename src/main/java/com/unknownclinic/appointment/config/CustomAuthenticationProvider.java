@@ -36,11 +36,14 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         // まず管理者として認証を試みる
         try {
             AdminUserDetails adminUserDetails = (AdminUserDetails) adminUserDetailsService.loadUserByUsername(username);
-            if (passwordEncoder.matches(password, adminUserDetails.getPassword())) {
+            boolean passwordMatches = passwordEncoder.matches(password, adminUserDetails.getPassword());
+            if (passwordMatches) {
                 return new UsernamePasswordAuthenticationToken(adminUserDetails, password, adminUserDetails.getAuthorities());
             }
+        } catch (org.springframework.security.core.userdetails.UsernameNotFoundException e) {
+            // 管理者が見つからない場合は患者として試みる
         } catch (Exception e) {
-            // 管理者として認証できなかった場合は患者として試みる
+            // その他のエラーは無視して患者として試みる
         }
 
         // 患者として認証を試みる

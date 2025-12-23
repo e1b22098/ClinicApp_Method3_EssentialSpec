@@ -12,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import com.unknownclinic.appointment.config.CustomAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -59,7 +58,7 @@ public class SecurityConfig {
                 .permitAll()
             )
             .logout(logout -> logout
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutUrl("/logout")
                 .logoutSuccessUrl("/")
                 .permitAll()
             )
