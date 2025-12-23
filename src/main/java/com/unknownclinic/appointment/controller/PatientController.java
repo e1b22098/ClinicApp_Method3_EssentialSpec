@@ -49,11 +49,20 @@ public class PatientController {
      */
     @GetMapping("/bookings/new")
     public String showBookingForm(Model model) {
-        List<BusinessDay> availableDays = businessDayService.getAvailableBusinessDays();
-        model.addAttribute("availableDays", availableDays);
-        model.addAttribute("timeSlots", BookingService.getAvailableTimeSlots());
-        model.addAttribute("bookingDto", new BookingDto());
-        return "patient/booking-form";
+        try {
+            List<BusinessDay> availableDays = businessDayService.getAvailableBusinessDays();
+            model.addAttribute("availableDays", availableDays);
+            model.addAttribute("timeSlots", BookingService.getAvailableTimeSlots());
+            model.addAttribute("bookingDto", new BookingDto());
+            return "patient/booking-form";
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("error", "営業日データの取得に失敗しました: " + e.getMessage());
+            model.addAttribute("availableDays", java.util.Collections.emptyList());
+            model.addAttribute("timeSlots", BookingService.getAvailableTimeSlots());
+            model.addAttribute("bookingDto", new BookingDto());
+            return "patient/booking-form";
+        }
     }
 
     /**

@@ -34,3 +34,9 @@ server:
       charset: UTF-8
       enabled: true
       force: true
+
+logging:
+  level:
+    com.unknownclinic.appointment: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG

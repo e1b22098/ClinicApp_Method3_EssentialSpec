@@ -1,0 +1,32 @@
+-- 営業日データの確認と追加SQL
+
+USE clinic_booking_db;
+
+-- 1. 現在の営業日データを確認
+SELECT * FROM business_days ORDER BY business_date;
+
+-- 2. 営業日データが存在しない場合、以下のSQLを実行して追加
+
+-- 今月と来月の営業日を追加（月曜日から金曜日のみ）
+INSERT INTO business_days (business_date, is_available) 
+SELECT 
+    DATE_ADD(CURDATE(), INTERVAL n DAY) as business_date,
+    TRUE as is_available
+FROM (
+    SELECT 1 as n UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION
+    SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10 UNION
+    SELECT 11 UNION SELECT 12 UNION SELECT 13 UNION SELECT 14 UNION SELECT 15 UNION
+    SELECT 16 UNION SELECT 17 UNION SELECT 18 UNION SELECT 19 UNION SELECT 20 UNION
+    SELECT 21 UNION SELECT 22 UNION SELECT 23 UNION SELECT 24 UNION SELECT 25 UNION
+    SELECT 26 UNION SELECT 27 UNION SELECT 28 UNION SELECT 29 UNION SELECT 30
+) numbers
+WHERE DATE_ADD(CURDATE(), INTERVAL n DAY) <= DATE_ADD(CURDATE(), INTERVAL 2 MONTH)
+  AND WEEKDAY(DATE_ADD(CURDATE(), INTERVAL n DAY)) < 5  -- 月曜日(0)から金曜日(4)まで
+  AND NOT EXISTS (
+      SELECT 1 FROM business_days 
+      WHERE business_date = DATE_ADD(CURDATE(), INTERVAL n DAY)
+  );
+
+-- 3. 追加後、再度確認
+SELECT COUNT(*) as total_business_days FROM business_days;
+SELECT * FROM business_days ORDER BY business_date LIMIT 10;
