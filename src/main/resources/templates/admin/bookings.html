@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>予約状況一覧 - 診療予約管理システム</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/admin/dashboard}">
+                <i class="bi bi-shield-lock"></i> 管理者画面
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" th:href="@{/admin/dashboard}">ダッシュボード</a>
+                <a class="nav-link" th:href="@{/admin/business-days}">営業日設定</a>
+                <form th:action="@{/logout}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-link nav-link text-white">ログアウト</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="bi bi-calendar-check"></i> 予約状況一覧</h2>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="get" th:action="@{/admin/bookings}">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-4">
+                            <label for="date" class="form-label">日付を選択</label>
+                            <input type="date" class="form-control" id="date" name="date" 
+                                   th:value="${selectedDate != null ? #temporals.format(selectedDate, 'yyyy-MM-dd') : ''}">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-search"></i> 検索
+                            </button>
+                        </div>
+                        <div class="col-md-2">
+                            <a th:href="@{/admin/bookings(date=${T(java.time.LocalDate).now()})}" class="btn btn-outline-secondary w-100">
+                                今日
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(bookings)}" class="alert alert-info">
+            <i class="bi bi-info-circle"></i> 選択された日の予約はありません。
+        </div>
+
+        <div th:if="${!#lists.isEmpty(bookings)}" class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>時間枠</th>
+                        <th>診察券番号</th>
+                        <th>患者名</th>
+                        <th>電話番号</th>
+                        <th>ステータス</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="booking : ${bookings}">
+                        <td th:text="${booking.timeSlot}"></td>
+                        <td th:text="${booking.patient.patientNumber}"></td>
+                        <td th:text="${booking.patient.name}"></td>
+                        <td th:text="${booking.patient.phoneNumber}"></td>
+                        <td>
+                            <span class="badge" 
+                                  th:classappend="${booking.status == 'CONFIRMED'} ? 'bg-success' : 
+                                                (${booking.status == 'PENDING'} ? 'bg-warning' : 'bg-secondary')"
+                                  th:text="${booking.status == 'CONFIRMED'} ? '確定' : 
+                                           (${booking.status == 'PENDING'} ? '確認待ち' : 'キャンセル')">
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

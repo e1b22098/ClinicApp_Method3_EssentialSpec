@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>営業日設定 - 診療予約管理システム</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/admin/dashboard}">
+                <i class="bi bi-shield-lock"></i> 管理者画面
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" th:href="@{/admin/dashboard}">ダッシュボード</a>
+                <a class="nav-link" th:href="@{/admin/bookings}">予約状況一覧</a>
+                <form th:action="@{/logout}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-link nav-link text-white">ログアウト</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="bi bi-calendar-event"></i> 営業日設定</h2>
+        </div>
+
+        <!-- 営業日追加フォーム -->
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="bi bi-plus-circle"></i> 営業日を追加</h5>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/admin/business-days}" method="post">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-4">
+                            <label for="businessDate" class="form-label">営業日</label>
+                            <input type="date" class="form-control" id="businessDate" name="businessDate" required>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="bi bi-plus-circle"></i> 追加
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 営業日一覧 -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-list"></i> 営業日一覧</h5>
+            </div>
+            <div class="card-body">
+                <div th:if="${#lists.isEmpty(businessDays)}" class="alert alert-info">
+                    <i class="bi bi-info-circle"></i> 営業日が登録されていません。
+                </div>
+
+                <div th:if="${!#lists.isEmpty(businessDays)}" class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>営業日</th>
+                                <th>予約受付状況</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="day : ${businessDays}">
+                                <td th:text="${#temporals.format(day.businessDate, 'yyyy年MM月dd日 (E)', 'ja', 'JP')}"></td>
+                                <td>
+                                    <span class="badge" 
+                                          th:classappend="${day.isAvailable} ? 'bg-success' : 'bg-danger'"
+                                          th:text="${day.isAvailable} ? '受付中' : '停止中'">
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <form th:if="${day.isAvailable}" 
+                                              th:action="@{/admin/business-days/{date}/availability(date=${day.businessDate})}" 
+                                              method="post" class="d-inline">
+                                            <input type="hidden" name="isAvailable" value="false">
+                                            <button type="submit" class="btn btn-warning btn-sm">
+                                                <i class="bi bi-pause-circle"></i> 受付停止
+                                            </button>
+                                        </form>
+                                        <form th:if="${!day.isAvailable}" 
+                                              th:action="@{/admin/business-days/{date}/availability(date=${day.businessDate})}" 
+                                              method="post" class="d-inline">
+                                            <input type="hidden" name="isAvailable" value="true">
+                                            <button type="submit" class="btn btn-success btn-sm">
+                                                <i class="bi bi-play-circle"></i> 受付再開
+                                            </button>
+                                        </form>
+                                        <form th:action="@{/admin/business-days/{id}/delete(id=${day.businessDayId})}" 
+                                              method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-danger btn-sm" 
+                                                    onclick="return confirm('本当に削除しますか？')">
+                                                <i class="bi bi-trash"></i> 削除
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

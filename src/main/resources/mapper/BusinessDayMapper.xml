@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.unknownclinic.appointment.mapper.BusinessDayMapper">
+    
+    <resultMap id="BusinessDayResultMap" type="com.unknownclinic.appointment.domain.BusinessDay">
+        <id property="businessDayId" column="business_day_id"/>
+        <result property="businessDate" column="business_date"/>
+        <result property="isAvailable" column="is_available"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="findAvailableBusinessDays" resultMap="BusinessDayResultMap">
+        SELECT * FROM business_days 
+        WHERE is_available = TRUE AND business_date >= CURDATE()
+        ORDER BY business_date ASC
+    </select>
+
+    <select id="findAllBusinessDays" resultMap="BusinessDayResultMap">
+        SELECT * FROM business_days 
+        ORDER BY business_date ASC
+    </select>
+
+    <select id="findByBusinessDate" resultMap="BusinessDayResultMap">
+        SELECT * FROM business_days WHERE business_date = #{businessDate}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="businessDayId">
+        INSERT INTO business_days (business_date, is_available)
+        VALUES (#{businessDate}, #{isAvailable})
+    </insert>
+
+    <update id="update">
+        UPDATE business_days
+        SET business_date = #{businessDate}, is_available = #{isAvailable}
+        WHERE business_day_id = #{businessDayId}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM business_days WHERE business_day_id = #{businessDayId}
+    </delete>
+
+    <update id="updateAvailability">
+        UPDATE business_days
+        SET is_available = #{isAvailable}
+        WHERE business_date = #{businessDate}
+    </update>
+</mapper>

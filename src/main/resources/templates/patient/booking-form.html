@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>予約作成 - 診療予約管理システム</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/patient/dashboard}">
+                <i class="bi bi-hospital"></i> 診療予約管理システム
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" th:href="@{/patient/dashboard}">予約一覧</a>
+                <form th:action="@{/logout}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-link nav-link text-white">ログアウト</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0"><i class="bi bi-calendar-plus"></i> 予約作成</h4>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/patient/bookings}" th:object="${bookingDto}" method="post">
+                            <div class="mb-3">
+                                <label for="businessDate" class="form-label">予約日 <span class="text-danger">*</span></label>
+                                <select class="form-select" id="businessDate" th:field="*{businessDate}" required>
+                                    <option value="">選択してください</option>
+                                    <option th:each="day : ${availableDays}" 
+                                            th:value="${day.businessDate}"
+                                            th:text="${#temporals.format(day.businessDate, 'yyyy年MM月dd日 (E)', 'ja', 'JP')}">
+                                    </option>
+                                </select>
+                                <div th:if="${#fields.hasErrors('businessDate')}" class="text-danger">
+                                    <small th:errors="*{businessDate}"></small>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">時間枠 <span class="text-danger">*</span></label>
+                                <div class="row g-2">
+                                    <div th:each="slot, iterStat : ${timeSlots}" class="col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" 
+                                                   th:id="'timeSlot' + ${iterStat.index}"
+                                                   th:field="*{timeSlot}" 
+                                                   th:value="${slot}">
+                                            <label class="form-check-label" 
+                                                   th:for="'timeSlot' + ${iterStat.index}"
+                                                   th:text="${slot}">
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div th:if="${#fields.hasErrors('timeSlot')}" class="text-danger">
+                                    <small th:errors="*{timeSlot}"></small>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle"></i> 予約を登録
+                                </button>
+                                <a th:href="@{/patient/dashboard}" class="btn btn-outline-secondary">キャンセル</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

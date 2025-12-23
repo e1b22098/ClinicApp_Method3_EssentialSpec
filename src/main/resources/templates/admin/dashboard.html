@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理者ダッシュボード - 診療予約管理システム</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/admin/dashboard}">
+                <i class="bi bi-shield-lock"></i> 管理者画面
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" th:href="@{/admin/bookings}">予約状況一覧</a>
+                <a class="nav-link" th:href="@{/admin/business-days}">営業日設定</a>
+                <form th:action="@{/logout}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-link nav-link text-white">ログアウト</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        <h2 class="mb-4"><i class="bi bi-speedometer2"></i> 管理者ダッシュボード</h2>
+        
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-calendar-check text-primary"></i> 予約状況一覧
+                        </h5>
+                        <p class="card-text">日別の予約を確認できます</p>
+                        <a th:href="@{/admin/bookings}" class="btn btn-primary">
+                            <i class="bi bi-arrow-right-circle"></i> 予約状況を見る
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-calendar-event text-success"></i> 営業日設定
+                        </h5>
+                        <p class="card-text">予約可能日の登録・削除、予約受付の停止・再開ができます</p>
+                        <a th:href="@{/admin/business-days}" class="btn btn-success">
+                            <i class="bi bi-arrow-right-circle"></i> 営業日を設定する
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <h4>営業日一覧</h4>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>営業日</th>
+                            <th>予約受付状況</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="day : ${businessDays}">
+                            <td th:text="${#temporals.format(day.businessDate, 'yyyy年MM月dd日')}"></td>
+                            <td>
+                                <span class="badge" 
+                                      th:classappend="${day.isAvailable} ? 'bg-success' : 'bg-danger'"
+                                      th:text="${day.isAvailable} ? '受付中' : '停止中'">
+                                </span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(businessDays)}">
+                            <td colspan="2" class="text-center text-muted">営業日が登録されていません</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

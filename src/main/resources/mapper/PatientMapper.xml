@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.unknownclinic.appointment.mapper.PatientMapper">
+    
+    <resultMap id="PatientResultMap" type="com.unknownclinic.appointment.domain.Patient">
+        <id property="patientId" column="patient_id"/>
+        <result property="patientNumber" column="patient_number"/>
+        <result property="name" column="name"/>
+        <result property="birthDate" column="birth_date"/>
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="password" column="password"/>
+        <result property="resetToken" column="reset_token"/>
+        <result property="resetTokenExpiry" column="reset_token_expiry"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="findById" resultMap="PatientResultMap">
+        SELECT * FROM patients WHERE patient_id = #{patientId}
+    </select>
+
+    <select id="findByPatientNumber" resultMap="PatientResultMap">
+        SELECT * FROM patients WHERE patient_number = #{patientNumber}
+    </select>
+
+    <select id="findByResetToken" resultMap="PatientResultMap">
+        SELECT * FROM patients WHERE reset_token = #{resetToken} AND reset_token_expiry > NOW()
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="patientId">
+        INSERT INTO patients (patient_number, name, birth_date, phone_number, password)
+        VALUES (#{patientNumber}, #{name}, #{birthDate}, #{phoneNumber}, #{password})
+    </insert>
+
+    <update id="update">
+        UPDATE patients
+        SET name = #{name}, birth_date = #{birthDate}, phone_number = #{phoneNumber}
+        WHERE patient_id = #{patientId}
+    </update>
+
+    <update id="updatePassword">
+        UPDATE patients
+        SET password = #{password}
+        WHERE patient_id = #{patientId}
+    </update>
+
+    <update id="updateResetToken">
+        UPDATE patients
+        SET reset_token = #{resetToken}, reset_token_expiry = #{expiry}
+        WHERE patient_id = #{patientId}
+    </update>
+
+    <update id="clearResetToken">
+        UPDATE patients
+        SET reset_token = NULL, reset_token_expiry = NULL
+        WHERE patient_id = #{patientId}
+    </update>
+</mapper>
